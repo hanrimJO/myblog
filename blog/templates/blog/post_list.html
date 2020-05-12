@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="../_assets/css/custom.min.css">
+</head>
+<body>
+{% for p in object_list %}
+    <h3>{{ p.title }}</h3>
+    <p>{{ p.content }}</p>
+{% endfor %}
+</body>
+</html>
