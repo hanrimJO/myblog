@@ -4,13 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-    <link rel="stylesheet" href="../_assets/css/custom.min.css">
+    <link rel="stylesheet" href="{% static 'css/custom.min.css' %}">
 </head>
 <body>
 {% for p in object_list %}
-    <h3>{{ p.title }}</h3>
-    <p>{{ p.content }}</p>
+<h3>{{ p.title }}</h3>
+<p>{{ p.content }}</p>
 {% endfor %}
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+
 </body>
+
 </html>
