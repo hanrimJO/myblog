@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from blog.models import Post
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 # Create your views here.
+
 
 class PostList(ListView):
     model = Post
@@ -10,6 +11,5 @@ class PostList(ListView):
         return Post.objects.order_by('-created')
 
 
-# def index(request):
-#     posts = Post.objects.all()
-#     return render(request, 'blog/index.html', {'posts': posts})
+class PostDetail(DetailView):
+    model = Post

@@ -11,7 +11,7 @@
 </head>
 <body>
 
-<div class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+<div class="navbar navbar-expand-lg fixed-top navbar-light bg-light" id="navbar">
     <div class="container">
         <a href="../" class="navbar-brand">hanrimjo's Blog</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
@@ -83,23 +83,26 @@
 
             <h1 class="my-4">Blog</h1>
 
-            <!-- Blog Post -->
-            {% for p in object_list %}
-            <div class="card mb-4">
-                {% if p.head_image %}
-                <img class="card-img-top" src="{{ p.head_image.url }}" alt="Card image cap">
-                {% endif %}
-                <div class="card-body">
-                    <h2 class="card-title">{{ p.title }}</h2>
-                    <p class="card-text">{{ p.content | truncatewords:20 }}</p>
-                    <a href="#" class="btn btn-primary">Read More &rarr;</a>
+            {% if object_list.exists %}
+                {% for p in object_list %}
+                <div class="card mb-4">
+                    {% if p.head_image %}
+                    <img class="card-img-top" src="{{ p.head_image.url }}" alt="Card image cap">
+                    {% endif %}
+                    <div class="card-body">
+                        <h2 class="card-title">{{ p.title }}</h2>
+                        <p class="card-text">{{ p.content | truncatewords:20 }}</p>
+                        <a href="#" class="btn btn-primary">Read More &rarr;</a>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Posted on {{ p.created }}
+                        <a href="#">{{ p.author }}</a>
+                    </div>
                 </div>
-                <div class="card-footer text-muted">
-                    Posted on {{ p.created }}
-                    <a href="#">{{ p.author }}</a>
-                </div>
-            </div>
-            {% endfor %}
+                {% endfor %}
+            {% else %}
+                <h3>아직 게시물이 없습니다</h3>
+            {% endif %}
         </div>
 
         <!-- Sidebar Widgets Column -->
