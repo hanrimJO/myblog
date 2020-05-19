@@ -11,6 +11,9 @@ def create_category(name='Life', description=''):
         description=description
     )
 
+    category.slug = category.name.replace(' ', '-').replace('/', '')
+    category.save()
+
     return category
 
 
@@ -112,7 +115,7 @@ class TestView(TestCase):
 
         self.check_right_side(soup)
         # 카테고리
-        main_div = soup.find('div', id='main_div')
+        main_div = soup.find('div', id='main-div')
         self.assertIn('Django', main_div.text)
         self.assertIn('기타', main_div.text)
 
@@ -131,7 +134,7 @@ class TestView(TestCase):
 
         self.assertGreater(Post.objects.count(), 0)
         post_000_url = post_000.get_absolute_url()
-        self.assertEqual(post_000_url, f'/blog/{post_000.pk}')
+        self.assertEqual(post_000_url, f'/blog/{post_000.pk}/')
 
         response = self.client.get(post_000_url)
         self.assertEqual(response.status_code, 200)
@@ -143,10 +146,55 @@ class TestView(TestCase):
         self.check_navbar(soup)
 
         body = soup.body
-        main_div = body.find('div', id='main_div')
+        main_div = body.find('div', id='main-div')
         self.assertIn(post_000.title, main_div.text)
         self.assertIn(post_000.author.username, main_div.text)
         self.assertIn(post_000.content, main_div.text)
 
         #카테고리
         self.check_right_side(soup)
+
+    def test_post_list_by_category(self):
+        category_django = create_category(name='Django')
+        post_000 = create_post(
+            title='the first post',
+            content='Hello world',
+            author=self.author_000,
+        )
+        post_001 = create_post(
+            title='d is silence',
+            content='django unchanined',
+            author=self.author_000,
+            category=category_django
+        )
+
+        response = self.client.get(category_django.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        # self.assertEqual(f'Blog - {category_django.name}', soup.title.text)
+        main_div = soup.find('div', id='main-div')
+        self.assertNotIn('기타', main_div.text)
+        self.assertIn(category_django.name, main_div.text)
+
+    def test_post_list_no_category(self):
+        category_django = create_category(name='Django')
+        post_000 = create_post(
+            title='the first post',
+            content='Hello world',
+            author=self.author_000,
+        )
+        post_001 = create_post(
+            title='d is silence',
+            content='django unchanined',
+            author=self.author_000,
+            category=category_django
+        )
+
+        response = self.client.get('/blog/category/_none/')
+        self.assertEqual(response.status_code, 200)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        main_div = soup.find('div', id='main-div')
+        self.assertIn('기타', main_div.text)
+        self.assertNotIn(category_django.name, main_div.text)

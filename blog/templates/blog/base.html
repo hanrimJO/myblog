@@ -79,13 +79,13 @@
     <div class="row">
 
         <!-- Blog Entries Column -->
-        <div class="col-md-9" id="main_div">
+        <div class="col-md-9" id="main-div">
             {% block content %}
             {% endblock %}
         </div>
 
         <!-- Sidebar Widgets Column -->
-        <div class="col-md-3" id="side_div">
+        <div class="col-md-3" id="side-div">
 
             <!-- Search Widget -->
             <div class="card my-4">
@@ -109,11 +109,11 @@
                             <ul class="list-unstyled mb-0">
                                 {% for category in category_list %}
                                 <li>
-                                    <a href="#">{{ category.name }} ({{ category.post_set.count }})</a>
+                                    <a href="{{ category.get_absolute_url }}">{{ category.name }} ({{ category.post_set.count }})</a>
                                 </li>
                                 {% endfor %}
                                 <li>
-                                    <a href="#">기타 ({{ posts_without_category }})</a>
+                                    <a href="/blog/category/_none/">기타 ({{ posts_without_category }})</a>
                                 </li>
                             </ul>
                         </div>
