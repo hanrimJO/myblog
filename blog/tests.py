@@ -61,6 +61,11 @@ class TestView(TestCase):
         self.assertIn('Blog', navbar.text)
         self.assertIn('AboutMe', navbar.text)
 
+    def check_right_side(self, soup):
+        category_card = soup.find('div', id='category-card')
+        self.assertIn('기타 (1)', category_card.text)
+        self.assertIn('Django (1)', category_card.text)
+
     def test_post_list_no_post(self):
         # /blog/의 상태코드가 200인가?
         response = self.client.get('/blog/')
@@ -105,22 +110,23 @@ class TestView(TestCase):
         post_000_read_more_btn = body.find('a', id=f'read-more-post-{post_000.pk}')
         self.assertEqual(post_000_read_more_btn['href'], post_000.get_absolute_url())
 
-        # 기타, django있어야함
-        category_card = body.find('div', id='category-card')
-        self.assertIn('기타 (1)', category_card.text)
-        self.assertIn('Django (1)', category_card.text)
-
+        self.check_right_side(soup)
         # 카테고리
-        main_div = body.find('div', id='main_div')
+        main_div = soup.find('div', id='main_div')
         self.assertIn('Django', main_div.text)
         self.assertIn('기타', main_div.text)
-
 
     def test_post_detail(self):
         post_000 = create_post(
             title='the first post',
             content='Hello world',
             author=self.author_000,
+        )
+        post_001 = create_post(
+            title='d is silence',
+            content='django unchanined',
+            author=self.author_000,
+            category=create_category(name='Django')
         )
 
         self.assertGreater(Post.objects.count(), 0)
@@ -141,3 +147,6 @@ class TestView(TestCase):
         self.assertIn(post_000.title, main_div.text)
         self.assertIn(post_000.author.username, main_div.text)
         self.assertIn(post_000.content, main_div.text)
+
+        #카테고리
+        self.check_right_side(soup)
