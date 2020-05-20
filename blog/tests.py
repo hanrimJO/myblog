@@ -255,3 +255,32 @@ class TestView(TestCase):
         main_div = soup.find('div', id='main-div')
         self.assertIn('기타', main_div.text)
         self.assertNotIn(category_django.name, main_div.text)
+
+    def test_tag_page(self):
+        tag_000 = create_tag(name='django')
+        tag_001 = create_tag(name='til')
+        post_000 = create_post(
+            title='the first post',
+            content='Hello world',
+            author=self.author_000,
+        )
+        post_001 = create_post(
+            title='d is silence',
+            content='django unchained',
+            author=self.author_000,
+        )
+        post_000.tags.add(tag_000)
+        post_000.tags.add(tag_001)
+        post_000.save()
+        post_001.tags.add(tag_001)
+        post_001.save()
+
+        response = self.client.get(tag_000.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main_div = soup.find('div', id='main-div')
+
+        self.assertIn(f'#{tag_000.name}', main_div.text)
+        self.assertIn(post_000.title, main_div.text)
+        self.assertNotIn(post_001.title, main_div.text)
