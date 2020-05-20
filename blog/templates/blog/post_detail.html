@@ -25,6 +25,11 @@
 
     <!-- Post Content -->
     <p>{{ object.content }}</p>
+    <br>
+    {% for tag in object.tags.all %}
+        <a href="{{ tag.get_absolute_url }}">#{{ tag }}</a>
+    {% endfor %}
+
     <hr>
 
     <!-- Comments Form -->

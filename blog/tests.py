@@ -124,17 +124,22 @@ class TestView(TestCase):
         self.assertIn('아직 게시물이 없습니다', soup.body.text)
 
     def test_post_list_post(self):
+        tag_django = create_tag(name='django')
         post_000 = create_post(
             title='the first post',
             content='Hello world',
             author=self.author_000,
         )
+        post_000.tags.add(tag_django)
+        post_000.save()
         post_001 = create_post(
             title='d is silence',
             content='django unchanined',
             author=self.author_000,
             category=create_category(name='Django')
         )
+        post_001.tags.add(tag_django)
+        post_001.save()
 
         self.assertGreater(Post.objects.count(), 0)
         # 새로고침
@@ -157,12 +162,22 @@ class TestView(TestCase):
         self.assertIn('Django', main_div.text)
         self.assertIn('기타', main_div.text)
 
+        # Tag test
+        post_card_000 = main_div.find('div', id=f'post-card-{post_000.pk}')
+
+        self.assertIn('#django', post_card_000.text)
+
+
     def test_post_detail(self):
         post_000 = create_post(
             title='the first post',
             content='Hello world',
             author=self.author_000,
         )
+        tag_django = create_tag(name='django')
+        post_000.tags.add(tag_django)
+        post_000.save()
+
         post_001 = create_post(
             title='d is silence',
             content='django unchanined',
@@ -191,6 +206,10 @@ class TestView(TestCase):
 
         #카테고리
         self.check_right_side(soup)
+
+        # Tag test
+
+        self.assertIn('#django', main_div.text)
 
     def test_post_list_by_category(self):
         category_django = create_category(name='Django')
