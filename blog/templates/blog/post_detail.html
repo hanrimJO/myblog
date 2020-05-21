@@ -3,13 +3,21 @@
 {% block content %}
 
     <h1>{{ object.title }}</h1>
+    {% if object.category %}
+        <span class="badge badge-success float-right">{{ object.category }}</span>
+    {% else %}
+        <span class="badge badge-secondary float-right">기타</span>
+    {% endif %}
+
 
     <!-- Author -->
     <p class="lead">
         by
         <a href="#">{{ object.author.username }}</a>
     </p>
-
+    {% if request.user == object.author %}
+        <button type="button" class="btn btn-sm btn-outline-primary float-right">EDIT</button>
+    {% endif %}
     <hr>
 
     <!-- Date/Time -->

@@ -95,7 +95,8 @@ class TestModel(TestCase):
 class TestView(TestCase):
     def setUp(self):
         self.client = Client()
-        self.author_000 = User.objects.create(username='smith', password='nopassword')
+        self.author_000 = User.objects.create_user(username='smith', password='nopassword')
+        self.author_trump = User.objects.create_user(username='trump', password='nopassword')
 
     def check_navbar(self, soup):
         navbar = soup.find('div', id='navbar')
@@ -169,10 +170,12 @@ class TestView(TestCase):
 
 
     def test_post_detail(self):
+        category_django = create_category(name='Django')
         post_000 = create_post(
             title='the first post',
             content='Hello world',
             author=self.author_000,
+            category=category_django
         )
         tag_django = create_tag(name='django')
         post_000.tags.add(tag_django)
@@ -182,7 +185,6 @@ class TestView(TestCase):
             title='d is silence',
             content='django unchanined',
             author=self.author_000,
-            category=create_category(name='Django')
         )
 
         self.assertGreater(Post.objects.count(), 0)
@@ -210,6 +212,33 @@ class TestView(TestCase):
         # Tag test
 
         self.assertIn('#django', main_div.text)
+
+        self.assertIn(category_django.name, main_div.text)
+        self.assertNotIn('EDIT', main_div.text)
+
+        # login
+        login_success = self.client.login(username='smith', password='nopassword')
+        response = self.client.get(post_000_url)
+        self.assertEqual(response.status_code, 200)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main_div = soup.find('div', id='main-div')
+        self.assertTrue(login_success)
+        self.assertEqual(post_000.author, self.author_000)
+        self.assertIn('EDIT', main_div.text)
+
+        # not author login
+        login_success = self.client.login(username='trump', password='nopassword')
+        response = self.client.get(post_000_url)
+        self.assertEqual(response.status_code, 200)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main_div = soup.find('div', id='main-div')
+        self.assertTrue(login_success)
+        self.assertEqual(post_000.author, self.author_000)
+        self.assertNotIn('EDIT', main_div.text)
+
+
 
     def test_post_list_by_category(self):
         category_django = create_category(name='Django')
