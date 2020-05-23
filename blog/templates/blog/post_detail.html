@@ -16,7 +16,7 @@
         <a href="#">{{ object.author.username }}</a>
     </p>
     {% if request.user == object.author %}
-        <button type="button" class="btn btn-sm btn-outline-primary float-right">EDIT</button>
+        <button type="button" onclick="location.href='{{ object.get_update_url }}'" class="btn btn-sm btn-outline-primary float-right">EDIT</button>
     {% endif %}
     <hr>
 

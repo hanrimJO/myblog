@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from blog.models import Post, Category, Tag
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, UpdateView
 
 
 # Create your views here.
@@ -27,6 +27,11 @@ class PostDetail(DetailView):
         context['category_list'] = Category.objects.all()
         context['posts_without_category'] = Post.objects.filter(category=None).count()
         return context
+
+
+class PostUpdate(UpdateView):
+    model = Post
+    fields = ['title', 'content', 'head_image', 'category', 'tags']
 
 
 class PostListByCategory(ListView):
