@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
-from .models import Post, Category, Tag
+from .models import Post, Category, Tag, Comment
 from django.utils import timezone
 from django.contrib.auth.models import User
 
@@ -25,6 +25,20 @@ def create_tag(name='django'):
     tag.save()
 
     return tag
+
+
+def create_comment(post, text='some comments', author=None):
+    if author is None:
+        author, is_created = User.objects.get_or_create(
+            username='guest',
+            password='guestpassword'
+        )
+    comment = Comment.objects.create(
+        post=post,
+        text=text,
+        author=author
+    )
+    return comment
 
 
 def create_post(title, content, author, category=None):
@@ -78,10 +92,6 @@ class TestModel(TestCase):
         self.assertEqual(tag_001.post_set.first(), post_000)
         self.assertEqual(tag_001.post_set.last(), post_001)
 
-
-
-
-
     def test_post(self):
         category = create_category()
         post_000 = create_post(
@@ -91,6 +101,23 @@ class TestModel(TestCase):
             category=category
         )
 
+    def test_comment(self):
+        post_000 = create_post(
+            title='the first post',
+            content='Hello world',
+            author=self.author_000,
+        )
+        self.assertEqual(Comment.objects.count(), 0)
+        comment_000 = create_comment(
+            post=post_000,
+            text='first_comment',
+        )
+        comment_001 = create_comment(
+            post=post_000,
+            text='second comment'
+        )
+        self.assertEqual(Comment.objects.count(), 2)
+        self.assertEqual(post_000.comment_set.count(), 2)
 
 class TestView(TestCase):
     def setUp(self):
