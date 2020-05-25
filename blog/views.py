@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from blog.models import Post, Category, Tag
 from django.views.generic import ListView, DetailView, UpdateView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # Create your views here.
@@ -29,7 +30,7 @@ class PostDetail(DetailView):
         return context
 
 
-class PostCreate(CreateView):
+class PostCreate(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['title', 'content', 'head_image', 'category', 'tags']
 
