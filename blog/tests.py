@@ -119,6 +119,7 @@ class TestModel(TestCase):
         self.assertEqual(Comment.objects.count(), 2)
         self.assertEqual(post_000.comment_set.count(), 2)
 
+
 class TestView(TestCase):
     def setUp(self):
         self.client = Client()
@@ -204,6 +205,7 @@ class TestView(TestCase):
             author=self.author_000,
             category=category_django
         )
+        comment_000 = create_comment(post_000, text='test comment', author=self.author_trump)
         tag_django = create_tag(name='django')
         post_000.tags.add(tag_django)
         post_000.save()
@@ -235,6 +237,12 @@ class TestView(TestCase):
 
         #카테고리
         self.check_right_side(soup)
+
+        # Comment
+        comment_div = main_div.find('div', id='comment-list')
+        self.assertIn(comment_000.author.username, comment_div.text)
+        self.assertIn(comment_000.text, comment_div.text)
+
 
         # Tag test
 
