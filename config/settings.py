@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog',
     'markdownx',
+    'crispy_forms'
 ]
 
 MIDDLEWARE = [
@@ -141,3 +142,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, '_media')
 MEDIA_URL = '/media/'
 
 MARKDOWN_MEDIA_PATH = datetime.now().strftime('markdownx/%Y/%m/%d')
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
