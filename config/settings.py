@@ -160,3 +160,4 @@ MARKDOWN_MEDIA_PATH = datetime.now().strftime('markdownx/%Y/%m/%d')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 ACCOUNT_EMAIL_REQUIRED = True
+LOGIN_REDIRECT_URL = '/blog/'
