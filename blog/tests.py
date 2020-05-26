@@ -137,7 +137,7 @@ class TestView(TestCase):
         self.assertIn('Django (1)', category_card.text)
 
     def test_post_list_no_post(self):
-        # /blog/의 상태코드가 200인가?
+        # blog/의 상태코드가 200인가?
         response = self.client.get('/blog/')
         self.assertEqual(response.status_code, 200)
 
@@ -266,12 +266,13 @@ class TestView(TestCase):
 
         # not author login
         login_success = self.client.login(username='trump', password='nopassword')
+        self.assertTrue(login_success)
+
         response = self.client.get(post_000_url)
         self.assertEqual(response.status_code, 200)
 
         soup = BeautifulSoup(response.content, 'html.parser')
         main_div = soup.find('div', id='main-div')
-        self.assertTrue(login_success)
         self.assertEqual(post_000.author, self.author_000)
         self.assertNotIn('EDIT', main_div.text)
 
@@ -405,4 +406,38 @@ class TestView(TestCase):
         main_div = soup.find('div', id='main-div')
         self.assertIn(post_000.title, main_div.text)
         self.assertIn('A test comment', main_div.text)
+
+    def test_delete_comment(self):
+        post_000 = create_post(
+            title='the first post',
+            content='Hello world',
+            author=self.author_000,
+        )
+        comment_000 = create_comment(post_000, text='test comment', author=self.author_trump)
+        comment_001 = create_comment(post_000, text='test comment', author=self.author_000)
+
+        self.assertEqual(Comment.objects.count(), 2)
+        self.assertEqual(post_000.comment_set.count(), 2)
+
+        login_success1 = self.client.login(username='smith', password='nopassword')
+        self.assertTrue(login_success1)
+        response = self.client.get(f'/blog/delete_comment/{comment_000.pk}/', follow=True)
+        self.assertEqual(Comment.objects.count(), 2)
+        self.assertEqual(post_000.comment_set.count(), 2)
+
+
+        login_success = self.client.login(username='trump', password='nopassword')
+        self.assertTrue(login_success)
+        response = self.client.get(f'/blog/delete_comment/{comment_000.pk}/', follow=True)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(Comment.objects.count(), 1)
+        self.assertEqual(post_000.comment_set.count(), 1)
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        main_div = soup.find('div', id='main-div')
+
+        self.assertNotIn('trump', main_div.text)
+
+
 
