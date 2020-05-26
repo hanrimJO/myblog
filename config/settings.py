@@ -55,7 +55,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog',
     'markdownx',
-    'crispy_forms'
+    'crispy_forms',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
@@ -85,6 +90,16 @@ TEMPLATES = [
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = [
+
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
@@ -144,3 +159,4 @@ MEDIA_URL = '/media/'
 MARKDOWN_MEDIA_PATH = datetime.now().strftime('markdownx/%Y/%m/%d')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+ACCOUNT_EMAIL_REQUIRED = True
