@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from blog.models import Post, Category, Tag, Comment
-from django.views.generic import ListView, DetailView, UpdateView, CreateView
+from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import CommentForm
 
@@ -117,3 +117,19 @@ def delete_comment(request, pk):
         return redirect(post.get_absolute_url() + '#comment-list')
     else:
         return redirect('/blog/')
+
+# CBV comment delete 부분
+# class CommentDelete(DeleteView):
+#     model = Comment
+#
+#     def get_object(self, queryset=None):
+#         comment = super(CommentDelete, self).get_object()
+#         if comment.author != self.request.user:
+#             raise PermissionError
+#         return comment
+#
+#     def get_success_url(self):
+#         post = self.get_object().post
+#         return post.get_absolute_url() + '#comment-list'
+
+
