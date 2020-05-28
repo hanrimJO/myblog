@@ -146,9 +146,9 @@
                 <h5 class="card-header">Search</h5>
                 <div class="card-body">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
+                        <input id="search-input" type="text" onkeyup="wait_for_enter()" class="form-control" placeholder="Search for...">
                         <span class="input-group-btn">
-                <button class="btn btn-secondary" type="button">Go!</button>
+                <button class="btn btn-secondary" type="button" onclick="search_post();">Go!</button>
               </span>
                     </div>
                 </div>
@@ -185,7 +185,17 @@
 <script src="{% static 'js/popper.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
 <script src="{% static 'js/custom.js' %}"></script>
-
+<script>
+    function search_post() {
+        var search_value = document.getElementById('search-input').value;
+        location.href = '/blog/search/'+search_value+'/'
+    }
+    function wait_for_enter() {
+        if (window.event.keyCode == 13){
+            search_post()
+        }
+    }
+</script>
 </body>
 
 </html>

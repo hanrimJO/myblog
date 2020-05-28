@@ -150,3 +150,8 @@ class PostSearch(PostList):
         q = self.kwargs['q']
         object_list = Post.objects.filter(Q(title__icontains=q)|Q(content__icontains=q))
         return object_list
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(PostSearch, self).get_context_data()
+        context['search_info'] = f'Search: {self.kwargs["q"]}'
+        return context
