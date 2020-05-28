@@ -43,6 +43,10 @@ class Post(models.Model):
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.SET_NULL)
     tags = models.ManyToManyField(Tag, blank=True)
 
+    class Meta:
+        ordering = ['-created']
+
+
     def __str__(self):
         return f'{self.title} :: {self.author}'
 
