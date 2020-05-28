@@ -4,6 +4,7 @@ secrets.json
 # Edit at https://www.gitignore.io/?templates=macos,django,pycharm
 migrations/
 /_media
+/basecamp/static/basecamp/images
 ### Django ###
 *.log
 *.pot
