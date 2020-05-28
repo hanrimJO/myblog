@@ -89,8 +89,8 @@ class TestModel(TestCase):
 
         self.assertEqual(post_000.tags.count(), 2)
         self.assertEqual(tag_001.post_set.count(), 2)
-        self.assertEqual(tag_001.post_set.first(), post_000)
-        self.assertEqual(tag_001.post_set.last(), post_001)
+        self.assertEqual(tag_001.post_set.first(), post_001)
+        self.assertEqual(tag_001.post_set.last(), post_000)
 
     def test_post(self):
         category = create_category()
@@ -507,4 +507,28 @@ class TestView(TestCase):
         self.assertNotIn('I am I am president of usa', soup.body.text)
         self.assertIn('I was', soup.body.text)
 
+    def test_search(self):
+        post_000 = create_post(
+            title='Stay Fool, Stay Hungry',
+            content='Amazing Apple Story',
+            author=self.author_000
+        )
+        post_001 = create_post(
+            title='Trump said',
+            content='Make America Great Again',
+            author=self.author_000
+        )
 
+        response = self.client.get('/blog/search/Stay Fool/')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        self.assertIn(post_000.title, soup.body.text)
+        self.assertNotIn(post_001.title, soup.body.text)
+
+        response = self.client.get('/blog/search/Make America/')
+        self.assertEqual(response.status_code, 200)
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        self.assertNotIn(post_000.title, soup.body.text)
+        self.assertIn(post_001.title, soup.body.text)

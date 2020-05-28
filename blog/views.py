@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from blog.models import Post, Category, Tag, Comment
 from django.views.generic import ListView, DetailView, UpdateView, CreateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from .forms import CommentForm
 
 
@@ -144,3 +145,8 @@ def delete_comment(request, pk):
 #         post = self.get_object().post
 #         return post.get_absolute_url() + '#comment-list'
 
+class PostSearch(PostList):
+    def get_queryset(self):
+        q = self.kwargs['q']
+        object_list = Post.objects.filter(Q(title__icontains=q)|Q(content__icontains=q))
+        return object_list
