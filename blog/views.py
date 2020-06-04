@@ -49,11 +49,7 @@ class PostUpdate(UpdateView):
     fields = ['title', 'content', 'head_image', 'category', 'tags']
 
 
-
-
-
 class PostListByCategory(ListView):
-
     def get_queryset(self):
         slug = self.kwargs['slug']
         if slug == '_none':
