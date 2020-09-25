@@ -8,6 +8,8 @@ COPY . .
 RUN pip install --upgrade pip \
     pip install -r requirements.txt
 
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh /
+RUN chmod +x /wait-for-it.sh
+RUN ["chmod", "+x", "/usr/src/app/start.sh"]
 EXPOSE 8000
-
-#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["/usr/src/app/start.sh"]
