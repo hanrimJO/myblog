@@ -1,6 +1,7 @@
 version: '3.5'
 services:
   nginx:
+    container_name: nginx
     image: nginx:latest
     ports:
       - "80:80"
@@ -9,7 +10,21 @@ services:
       - ./config/nginx:/etc/nginx/conf.d
     depends_on:
       - web
+  jenkins:
+    container_name: jenkins
+    build: 
+      dockerfile: ./jenkins/Dockerfile
+      context: .
+    environment: 
+      ENVSUBST_VARS: FQDN
+      FQDN: localhost
+    ports:
+      - "8080:8080"
+    volumes: 
+      - jenkins_data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
   web:
+    container_name: django
     build:
       context: .
       dockerfile: Dockerfile
@@ -21,6 +36,7 @@ services:
     depends_on:
       - db
   db:
+    container_name: postresql
     image: postgres:latest
     restart: always
     volumes:
@@ -31,3 +47,5 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "5432:5432"
+volumes: 
+  jenkins_data:
